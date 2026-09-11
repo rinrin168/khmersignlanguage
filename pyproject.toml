@@ -1,0 +1,4 @@
+[tool.pyrefly]
+# Ignore import errors for packages without type stubs (cv2, mediapipe, etc.)
+ignore_missing_imports = true
+ignore_errors_in_generated_code = true

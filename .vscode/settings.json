@@ -1,0 +1,17 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/venv/Scripts/python.exe",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/venv/Lib/site-packages"
+    ],
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/venv/Lib/site-packages"
+    ],
+    "python.analysis.typeCheckingMode": "off",
+    "python.linting.enabled": false,
+    "pyrefly.diagnostics.enable": false,
+    "editor.rulers": [80],
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/*.pyc": true
+    }
+}

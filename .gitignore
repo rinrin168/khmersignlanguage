@@ -1,0 +1,28 @@
+# Python / venv
+venv/
+__pycache__/
+*.pyc
+.pyrefly_cache/
+
+# Editor
+.vscode/*
+!.vscode/settings.json
+
+# Raw / processed data (large, regenerate locally with collect_data.py etc.)
+data/*/
+data/*.npy
+dataset/*
+
+# MediaPipe base model (downloaded automatically by collect_data.py)
+models/holistic_landmarker.task
+
+# Trained model weights (link them externally in the README if >50MB)
+models/*.pt
+models/*.keras
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
