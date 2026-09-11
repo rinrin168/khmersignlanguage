@@ -8,16 +8,22 @@ __pycache__/
 .vscode/*
 !.vscode/settings.json
 
-# Raw / processed data (large, regenerate locally with collect_data.py etc.)
+# Raw per-clip landmark recordings (intermediate scratch — regenerate
+# locally with collect_data.py). The COMPILED dataset (X.npy/y.npy/
+# labels.npy + the fixed train/val/test split, all *.npy directly under
+# data/) is NOT ignored — it's small (landmarks, not video) and is
+# committed directly as the submitted dataset.
 data/*/
-data/*.npy
 dataset/*
 
-# MediaPipe base model (downloaded automatically by collect_data.py)
+# MediaPipe base model (downloaded automatically by collect_data.py —
+# third-party asset, cited in README, not part of the submitted work)
 models/holistic_landmarker.task
 
-# Trained model weights (link them externally in the README if >50MB)
-models/*.pt
+# Trained model weights ARE committed by default (they're only ~1-2MB
+# for these architectures). If a checkpoint ever exceeds 50MB, add its
+# exact filename here and host it externally with a link in the README
+# instead (per the assignment's submission checklist).
 models/*.keras
 
 # Jupyter
