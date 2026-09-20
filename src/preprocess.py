@@ -47,7 +47,7 @@ def main():
         print("X.npy not found. Run extract_landmarks.py first.")
         return
 
-    X = np.load(X_path)              # shape (N, 30, 258)
+    X = np.load(X_path)              # shape (N, 90, 258)
     y = np.load(y_path)              # shape (N,) integer labels
     labels = np.load(labels_path, allow_pickle=True)
 

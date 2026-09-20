@@ -21,7 +21,7 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
-from landmarks import extract_landmarks  # noqa: E402
+from landmarks import extract_landmarks, SEQUENCE_LENGTH  # noqa: E402
 from models import build_model  # noqa: E402
 from utils import get_device  # noqa: E402
 
@@ -70,7 +70,6 @@ MODELS_DIR = "models"
 DATA_DIR = "data"
 RESULTS_DIR = "results"
 HOLISTIC_PATH = os.path.join(MODELS_DIR, "holistic_landmarker.task")
-SEQUENCE_LENGTH = 30
 APPROACHES = ["lstm", "gru", "transformer"]
 
 
@@ -208,12 +207,12 @@ Webcam Frame
   ↓
 MediaPipe Holistic Landmarker (258 values/frame: 132 Pose + 63 Left Hand + 63 Right Hand)
   ↓
-Rolling 30-Frame Sequence Buffer (30 × 258)
+Rolling 90-Frame Sequence Buffer (90 × 258, ~3 seconds)
   ↓
 One of three PyTorch classifiers, trained from scratch on the identical split:
   • LSTM        — stacked LSTM(64→128→64)
   • GRU         — stacked GRU(64→128→64)
-  • Transformer — self-attention encoder over the 30 frames
+  • Transformer — self-attention encoder over the 90 frames
   ↓
 Dense Classification Head (64 units → Softmax)
   ↓

@@ -9,16 +9,16 @@ A real-time Cambodian Sign Language (ភាសាសញ្ញាខ្មែរ)
 
 ## 1. Problem Statement
 
-- **Task:** Given a 30-frame sequence of MediaPipe Holistic body/hand landmarks captured from a webcam, classify which Khmer sign-language word was performed.
-- **Input → Output:** `(30 frames × 258 landmark values)` → one of *N* word classes.
+- **Task:** Given a 90-frame (~3 second) sequence of MediaPipe Holistic body/hand landmarks captured from a webcam, classify which Khmer sign-language word was performed.
+- **Input → Output:** `(90 frames × 258 landmark values)` → one of *N* word classes.
 - **Problem type:** Multi-class sequence classification (time series).
 - **Why it matters:** Khmer Sign Language has very little digital/dataset support compared to ASL or other major sign languages. A lightweight, webcam-only recognizer is a first step toward accessible communication tools for the Deaf community in Cambodia.
 
 ## 2. Dataset
 
 - **Source:** Self-collected via `src/collect_data.py` — each student/contributor performs each sign in front of a webcam.
-- **Collection method:** MediaPipe Holistic extracts 258 landmark values per frame (33 pose points × 4 + 21 left-hand points × 3 + 21 right-hand points × 3). Each clip is 30 frames (~1 second at 30fps).
-- **Size:** `NUM_SEQUENCES` clips × `len(WORDS)` classes (defaults: 30 clips × 10 words = 300 sequences; see `src/collect_data.py` for the exact numbers used in this run — update this section with your real totals after collection).
+- **Collection method:** MediaPipe Holistic extracts 258 landmark values per frame (33 pose points × 4 + 21 left-hand points × 3 + 21 right-hand points × 3). Each clip is 90 frames (~3 seconds at 30fps).
+- **Size:** `NUM_SEQUENCES` clips × `len(WORDS)` classes (defaults: 30 clips × 11 words = 330 sequences; see `src/collect_data.py` for the exact numbers used in this run — update this section with your real totals after collection).
 - **Classes:** hello, thank_you, yes, no, please, sorry, help, water, eat, name (editable in `WORDS` in `collect_data.py`).
 - **Known limitations:** small sample count per class, single signer, consistent lighting/background — the model has not been validated for signer-independent generalization.
 - **Split:** fixed 70% train / 15% validation / 15% test, stratified by class, seed 42 (`src/preprocess.py`). The exact split sizes are recorded in `results/split_info.json` after running it. The identical split and test-time preprocessing (MediaPipe landmark extraction, no additional augmentation) are used for every approach.
@@ -26,7 +26,7 @@ A real-time Cambodian Sign Language (ភាសាសញ្ញាខ្មែរ)
 
 ## 3. Approaches Compared
 
-All three are implemented in **PyTorch**, trained **from scratch** on the identical `(30, 258)` landmark sequences and the identical train/val/test split — they differ only in architecture (dimension A from the assignment brief):
+All three are implemented in **PyTorch**, trained **from scratch** on the identical `(90, 258)` landmark sequences and the identical train/val/test split — they differ only in architecture (dimension A from the assignment brief):
 
 | # | Approach | Architecture | File |
 |---|----------|--------------|------|

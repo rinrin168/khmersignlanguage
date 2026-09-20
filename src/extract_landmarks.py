@@ -2,7 +2,7 @@
 # Stage 2 — extract_landmarks.py
 # Purpose : Walk through the data/ folder, load every .npy
 #           sequence file, and compile ONE combined dataset:
-#             X.npy  — shape (N, 30, 258)  ← inputs
+#             X.npy  — shape (N, 90, 258)  ← inputs
 #             y.npy  — shape (N,)           ← integer labels
 #             labels.npy — the list of word names
 #
@@ -12,6 +12,8 @@
 
 import numpy as np
 import os
+
+from landmarks import SEQUENCE_LENGTH, FEATURE_SIZE
 
 DATA_DIR = "data"    # folder created by collect_data.py
 OUT_DIR  = "data"    # we save X.npy / y.npy in the same folder
@@ -42,10 +44,10 @@ def main():
             if not os.path.exists(npy_path):
                 continue
 
-            seq_array = np.load(npy_path)          # shape (30, 258)
+            seq_array = np.load(npy_path)          # shape (SEQUENCE_LENGTH, 258)
 
             # Basic validation
-            if seq_array.shape != (30, 258):
+            if seq_array.shape != (SEQUENCE_LENGTH, FEATURE_SIZE):
                 print(f"  Skipping {npy_path} — unexpected shape {seq_array.shape}")
                 continue
 

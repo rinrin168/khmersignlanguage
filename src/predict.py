@@ -21,14 +21,13 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
 sys.path.insert(0, os.path.dirname(__file__))
-from landmarks import extract_landmarks  # noqa: E402
+from landmarks import extract_landmarks, SEQUENCE_LENGTH  # noqa: E402
 from models import build_model  # noqa: E402
 from utils import get_device  # noqa: E402
 
 MODELS_DIR = "models"
 DATA_DIR = "data"
 HOLISTIC_PATH = os.path.join(MODELS_DIR, "holistic_landmarker.task")
-SEQUENCE_LENGTH = 30
 CONFIDENCE_THRESH = 0.70
 
 

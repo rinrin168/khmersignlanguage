@@ -9,6 +9,7 @@ import numpy as np
 POSE_LANDMARKS = 33
 HAND_LANDMARKS = 21
 FEATURE_SIZE = POSE_LANDMARKS * 4 + HAND_LANDMARKS * 3 + HAND_LANDMARKS * 3  # 258
+SEQUENCE_LENGTH = 90  # frames per clip (~3 seconds at 30fps) — single source of truth
 
 
 def extract_landmarks(result) -> np.ndarray:
