@@ -22,7 +22,7 @@ A real-time Cambodian Sign Language (ភាសាសញ្ញាខ្មែរ)
 - **Classes:** hello, thank_you, yes, no, please, sorry, help, water, eat, name (editable in `WORDS` in `collect_data.py`).
 - **Known limitations:** small sample count per class, single signer, consistent lighting/background — the model has not been validated for signer-independent generalization.
 - **Split:** fixed 70% train / 15% validation / 15% test, stratified by class, seed 42 (`src/preprocess.py`). The exact split sizes are recorded in `results/split_info.json` after running it. The identical split and test-time preprocessing (MediaPipe landmark extraction, no additional augmentation) are used for every approach.
-- **Submitted dataset:** the compiled landmark arrays (`data/X.npy`, `data/y.npy`, `data/labels.npy`) and the fixed split (`data/X_train.npy`, `X_val.npy`, `X_test.npy`, `y_train.npy`, `y_val.npy`, `y_test.npy`) are committed directly in this repo under `data/` — they're small (numeric landmark arrays, not video), typically only a few MB. The raw per-clip recordings under `data/<word>/<clip>/landmarks.npy` are NOT committed (regenerate them locally with `collect_data.py` if needed); they're intermediate scratch that `extract_landmarks.py` compiles into the files above.
+- **Submitted dataset:** the compiled landmark arrays (`data/X.npy` — 330 clips × 90 frames × 258 values, float32, about 29 MB — plus `data/y.npy` and `data/labels.npy`) are committed directly in this repo under `data/`. The train/val/test split files (`X_train.npy`, `X_val.npy`, `X_test.npy`, `y_train.npy`, `y_val.npy`, `y_test.npy`) are NOT committed; run `src/preprocess.py` to regenerate them (fixed seed, so the split is identical every time; sizes are in `results/split_info.json`). The raw per-clip recordings under `data/<word>/<clip>/landmarks.npy` are also NOT committed (regenerate them with `collect_data.py`); they're intermediate scratch that `extract_landmarks.py` compiles into `X.npy`.
 
 ## 3. Approaches Compared
 
@@ -56,7 +56,7 @@ KhmerSignLanguage/
 ├── data/                     ← Landmark .npy files
 │   ├── hello/0/landmarks.npy         (raw per-clip recordings — gitignored, regenerate locally)
 │   ├── X.npy / y.npy / labels.npy    (compiled dataset — committed)
-│   └── X_train/X_val/X_test.npy, y_train/y_val/y_test.npy  (fixed split — committed)
+│   └── X_train/X_val/X_test.npy, y_train/y_val/y_test.npy  (fixed split — gitignored, run preprocess.py)
 ├── models/                   ← Saved trained model weights (*.pt — committed; link externally instead if any exceeds 50MB)
 ├── results/                  ← Metrics, figures, comparison table, per-approach subfolders
 │   ├── lstm/  gru/  transformer/    (history.json, meta.json, metrics.json, plots, errors.csv)

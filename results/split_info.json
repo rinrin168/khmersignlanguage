@@ -1,0 +1,22 @@
+{
+  "seed": 42,
+  "val_size": 0.15,
+  "test_size": 0.15,
+  "num_classes": 11,
+  "classes": [
+    "again",
+    "correct",
+    "deaf_person",
+    "delicious",
+    "dont_understand",
+    "hearing_person",
+    "how_are_you",
+    "incorrect",
+    "sorry",
+    "thank_you",
+    "understand"
+  ],
+  "n_train": 230,
+  "n_val": 50,
+  "n_test": 50
+}

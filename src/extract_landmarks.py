@@ -60,7 +60,7 @@ def main():
         print("No valid sequences found. Check your data/ folder.")
         return
 
-    X = np.array(sequences)   # shape: (N, 30, 258)
+    X = np.array(sequences, dtype=np.float32)   # shape: (N, 90, 258); float32 halves the file size
     y = np.array(labels)       # shape: (N,)
 
     np.save(os.path.join(OUT_DIR, "X.npy"),      X)

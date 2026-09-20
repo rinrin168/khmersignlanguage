@@ -10,11 +10,19 @@ __pycache__/
 
 # Raw per-clip landmark recordings (intermediate scratch — regenerate
 # locally with collect_data.py). The COMPILED dataset (X.npy/y.npy/
-# labels.npy + the fixed train/val/test split, all *.npy directly under
-# data/) is NOT ignored — it's small (landmarks, not video) and is
-# committed directly as the submitted dataset.
+# labels.npy directly under data/) is NOT ignored — it's small
+# (landmarks, not video) and is committed directly as the submitted dataset.
 data/*/
 dataset/*
+
+# The train/val/test split files are regenerated from X.npy/y.npy by
+# preprocess.py (fixed seed, so the split is identical every time).
+data/X_train.npy
+data/X_val.npy
+data/X_test.npy
+data/y_train.npy
+data/y_val.npy
+data/y_test.npy
 
 # MediaPipe base model (downloaded automatically by collect_data.py —
 # third-party asset, cited in README, not part of the submitted work)
