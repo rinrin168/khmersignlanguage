@@ -185,4 +185,4 @@ See [`notebooks/train_colab.ipynb`](notebooks/train_colab.ipynb) — mirrors Ste
 
 ## 11. Limitations & Future Work
 
-_(Fill in after running experiments — see the assignment's Section 5.D requirement for a limitations discussion. Talking points to consider: single-signer dataset limits generalization; small per-class sample count; no data augmentation; Transformer needs more data than LSTM/GRU to show its full advantage; future work could add more signers, more words, and temporal augmentation.)_
+_(Fill in after running experiments)
