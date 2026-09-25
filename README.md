@@ -1,4 +1,4 @@
-# 🤟 Khmer Sign Language Word Recognition System
+# Khmer Sign Language Word Recognition System
 
 **Author:** _[Your Name Here]_
 **Course:** Deep Learning — Final Project
@@ -9,17 +9,17 @@ A real-time Cambodian Sign Language (ភាសាសញ្ញាខ្មែរ)
 
 ## 1. Problem Statement
 
-- **Task:** Given a 90-frame (~3 second) sequence of MediaPipe Holistic body/hand landmarks captured from a webcam, classify which Khmer sign-language word was performed.
+- **Task:** Given a 90-frame sequence of MediaPipe Holistic body/hand landmarks captured from a webcam, classify which Khmer sign-language word was performed.
 - **Input → Output:** `(90 frames × 258 landmark values)` → one of *N* word classes.
 - **Problem type:** Multi-class sequence classification (time series).
-- **Why it matters:** Khmer Sign Language has very little digital/dataset support compared to ASL or other major sign languages. A lightweight, webcam-only recognizer is a first step toward accessible communication tools for the Deaf community in Cambodia.
+- **Why it matters:** Khmer Sign Language has very little digital/dataset support compared to ASL or other major sign languages. 
 
 ## 2. Dataset
 
 - **Source:** Self-collected via `src/collect_data.py` — each student/contributor performs each sign in front of a webcam.
 - **Collection method:** MediaPipe Holistic extracts 258 landmark values per frame (33 pose points × 4 + 21 left-hand points × 3 + 21 right-hand points × 3). Each clip is 90 frames (~3 seconds at 30fps).
 - **Size:** `NUM_SEQUENCES` clips × `len(WORDS)` classes (defaults: 30 clips × 11 words = 330 sequences; see `src/collect_data.py` for the exact numbers used in this run — update this section with your real totals after collection).
-- **Classes:** hello, thank_you, yes, no, please, sorry, help, water, eat, name (editable in `WORDS` in `collect_data.py`).
+- **Classes:** how_are_you, again, correct, incorrect, don't_understand, understand, deaf_person, hearing_person, delicious, sorry, thank_you (editable in `WORDS` in `collect_data.py`).
 - **Known limitations:** small sample count per class, single signer, consistent lighting/background — the model has not been validated for signer-independent generalization.
 - **Split:** fixed 70% train / 15% validation / 15% test, stratified by class, seed 42 (`src/preprocess.py`). The exact split sizes are recorded in `results/split_info.json` after running it. The identical split and test-time preprocessing (MediaPipe landmark extraction, no additional augmentation) are used for every approach.
 - **Submitted dataset:** the compiled landmark arrays (`data/X.npy` — 330 clips × 90 frames × 258 values, float32, about 29 MB — plus `data/y.npy` and `data/labels.npy`) are committed directly in this repo under `data/`. The train/val/test split files (`X_train.npy`, `X_val.npy`, `X_test.npy`, `y_train.npy`, `y_val.npy`, `y_test.npy`) are NOT committed; run `src/preprocess.py` to regenerate them (fixed seed, so the split is identical every time; sizes are in `results/split_info.json`). The raw per-clip recordings under `data/<word>/<clip>/landmarks.npy` are also NOT committed (regenerate them with `collect_data.py`); they're intermediate scratch that `extract_landmarks.py` compiles into `X.npy`.
@@ -88,65 +88,6 @@ KhmerSignLanguage/
 
 ## 6. How to Install and Run
 
-### Step 0 — Set up the environment
-```powershell
-venv\Scripts\Activate.ps1
-venv\Scripts\pip.exe install -r requirements.txt
-```
-
-### Step 1–2 — Test webcam & MediaPipe
-```powershell
-python src\webcam_test.py
-python src\mediapipe_test.py
-```
-
-### Step 3 — Collect training data
-```powershell
-python src\collect_data.py
-```
-> Edit `WORDS` in `collect_data.py` to use your own signs. Records `NUM_SEQUENCES` clips × `SEQUENCE_LENGTH` frames per word.
-
-### Step 4 — Compile the dataset
-```powershell
-python src\extract_landmarks.py
-```
-
-### Step 5 — Create the fixed train/val/test split
-```powershell
-python src\preprocess.py
-```
-
-### Step 6 — Train each approach
-```powershell
-python src\train.py --model lstm
-python src\train.py --model gru
-python src\train.py --model transformer
-```
-
-### Step 7 — Evaluate each approach on the (same) test set
-```powershell
-python src\evaluate.py --model lstm
-python src\evaluate.py --model gru
-python src\evaluate.py --model transformer
-```
-
-### Step 8 — Compare all approaches
-```powershell
-python src\compare.py
-```
-
-### Step 9 — Hyperparameter search for the best approach
-```powershell
-python src\hyperparam_search.py --model <winning approach>
-```
-Reports the learning-rate × weight-decay grid tried and the best combination, saved to `results/<model>/hparam_search.json`.
-
-### Step 10 — Real-time prediction / web app
-```powershell
-python src\predict.py --model transformer
-venv\Scripts\streamlit.exe run app\app.py
-```
-
 ### Training on Google Colab (GPU)
 See [`notebooks/train_colab.ipynb`](notebooks/train_colab.ipynb) — mirrors Steps 5–9 above with a free T4 GPU. Upload `data/X.npy`, `y.npy`, `labels.npy` and the `src/` folder to Google Drive first.
 
@@ -172,17 +113,17 @@ See [`notebooks/train_colab.ipynb`](notebooks/train_colab.ipynb) — mirrors Ste
 
 | English    | Khmer Phonetic | Khmer Script |
 |------------|---------------|--------------|
-| hello      | Sour Sdei     | ស្ួស្ដី      |
-| thank you  | Orkun         | អរគុណ         |
-| yes        | Baht / Jas    | បាទ / ចាស    |
-| no         | Te            | ទេ            |
-| please     | Soum          | សូម           |
-| sorry      | Som Tos       | សូមទោស        |
-| help       | Chuoy         | ជួយ           |
-| water      | Tuk           | ទឹក           |
-| eat        | Si Bai        | ស៊ីបាយ        |
-| name       | Chhmous       | ឈ្មោះ         |
+|       |      |       |
+|   |          |          |
+|         |     |     |
+|          |             |             |
+|      |           |            |
+|       |         |         |
+|        |          |            |
+|       |            |            |
+|         |          |         |
+|        |        |          |
 
 ## 11. Limitations & Future Work
 
-_(Fill in after running experiments — see the assignment's Section 5.D requirement for a limitations discussion. Talking points to consider: single-signer dataset limits generalization; small per-class sample count; no data augmentation; Transformer needs more data than LSTM/GRU to show its full advantage; future work could add more signers, more words, and temporal augmentation.)_
+_(Fill in after running experiments)
