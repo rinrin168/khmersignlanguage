@@ -88,65 +88,6 @@ KhmerSignLanguage/
 
 ## 6. How to Install and Run
 
-### Step 0 — Set up the environment
-```powershell
-venv\Scripts\Activate.ps1
-venv\Scripts\pip.exe install -r requirements.txt
-```
-
-### Step 1–2 — Test webcam & MediaPipe
-```powershell
-python src\webcam_test.py
-python src\mediapipe_test.py
-```
-
-### Step 3 — Collect training data
-```powershell
-python src\collect_data.py
-```
-> Edit `WORDS` in `collect_data.py` to use your own signs. Records `NUM_SEQUENCES` clips × `SEQUENCE_LENGTH` frames per word.
-
-### Step 4 — Compile the dataset
-```powershell
-python src\extract_landmarks.py
-```
-
-### Step 5 — Create the fixed train/val/test split
-```powershell
-python src\preprocess.py
-```
-
-### Step 6 — Train each approach
-```powershell
-python src\train.py --model lstm
-python src\train.py --model gru
-python src\train.py --model transformer
-```
-
-### Step 7 — Evaluate each approach on the (same) test set
-```powershell
-python src\evaluate.py --model lstm
-python src\evaluate.py --model gru
-python src\evaluate.py --model transformer
-```
-
-### Step 8 — Compare all approaches
-```powershell
-python src\compare.py
-```
-
-### Step 9 — Hyperparameter search for the best approach
-```powershell
-python src\hyperparam_search.py --model <winning approach>
-```
-Reports the learning-rate × weight-decay grid tried and the best combination, saved to `results/<model>/hparam_search.json`.
-
-### Step 10 — Real-time prediction / web app
-```powershell
-python src\predict.py --model transformer
-venv\Scripts\streamlit.exe run app\app.py
-```
-
 ### Training on Google Colab (GPU)
 See [`notebooks/train_colab.ipynb`](notebooks/train_colab.ipynb) — mirrors Steps 5–9 above with a free T4 GPU. Upload `data/X.npy`, `y.npy`, `labels.npy` and the `src/` folder to Google Drive first.
 
