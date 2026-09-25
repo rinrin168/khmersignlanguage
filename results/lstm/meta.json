@@ -1,0 +1,15 @@
+{
+  "model": "lstm",
+  "trainable_params": 236811,
+  "training_time_seconds": 6.7,
+  "device": "Tesla T4",
+  "epochs_run": 46,
+  "best_val_acc": 0.46,
+  "hyperparameters": {
+    "lr": 0.001,
+    "weight_decay": 0.0,
+    "batch_size": 16,
+    "patience": 25,
+    "seed": 42
+  }
+}

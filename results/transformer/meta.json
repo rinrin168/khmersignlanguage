@@ -1,0 +1,15 @@
+{
+  "model": "transformer",
+  "trainable_params": 307083,
+  "training_time_seconds": 8.1,
+  "device": "Tesla T4",
+  "epochs_run": 44,
+  "best_val_acc": 0.94,
+  "hyperparameters": {
+    "lr": 0.001,
+    "weight_decay": 0.0,
+    "batch_size": 16,
+    "patience": 25,
+    "seed": 42
+  }
+}

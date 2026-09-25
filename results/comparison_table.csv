@@ -1,0 +1,4 @@
+approach,test_accuracy,precision_macro,recall_macro,f1_macro,trainable_params,training_time_s,epochs_run,device
+GRU,1.0,1.0,1.0,1.0,178827,5.8,48,Tesla T4
+TRANSFORMER,0.98,0.9848484848484849,0.9772727272727273,0.9787485242030698,307083,8.1,44,Tesla T4
+LSTM,0.38,0.27922077922077926,0.4090909090909091,0.3086776859504132,236811,6.7,46,Tesla T4

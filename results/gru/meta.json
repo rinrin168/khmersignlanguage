@@ -1,0 +1,15 @@
+{
+  "model": "gru",
+  "trainable_params": 178827,
+  "training_time_seconds": 5.8,
+  "device": "Tesla T4",
+  "epochs_run": 48,
+  "best_val_acc": 1.0,
+  "hyperparameters": {
+    "lr": 0.001,
+    "weight_decay": 0.0,
+    "batch_size": 16,
+    "patience": 25,
+    "seed": 42
+  }
+}

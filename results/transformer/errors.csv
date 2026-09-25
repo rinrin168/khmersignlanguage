@@ -1,0 +1,2 @@
+test_index,true_label,predicted_label,predicted_confidence
+39,understand,dont_understand,0.945267379283905
