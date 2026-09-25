@@ -9,10 +9,10 @@ A real-time Cambodian Sign Language (ភាសាសញ្ញាខ្មែរ)
 
 ## 1. Problem Statement
 
-- **Task:** Given a 90-frame (~3 second) sequence of MediaPipe Holistic body/hand landmarks captured from a webcam, classify which Khmer sign-language word was performed.
+- **Task:** Given a 90-frame sequence of MediaPipe Holistic body/hand landmarks captured from a webcam, classify which Khmer sign-language word was performed.
 - **Input → Output:** `(90 frames × 258 landmark values)` → one of *N* word classes.
 - **Problem type:** Multi-class sequence classification (time series).
-- **Why it matters:** Khmer Sign Language has very little digital/dataset support compared to ASL or other major sign languages. A lightweight, webcam-only recognizer is a first step toward accessible communication tools for the Deaf community in Cambodia.
+- **Why it matters:** Khmer Sign Language has very little digital/dataset support compared to ASL or other major sign languages. 
 
 ## 2. Dataset
 
