@@ -172,16 +172,16 @@ See [`notebooks/train_colab.ipynb`](notebooks/train_colab.ipynb) — mirrors Ste
 
 | English    | Khmer Phonetic | Khmer Script |
 |------------|---------------|--------------|
-| hello      | Sour Sdei     | ស្ួស្ដី      |
-| thank you  | Orkun         | អរគុណ         |
-| yes        | Baht / Jas    | បាទ / ចាស    |
-| no         | Te            | ទេ            |
-| please     | Soum          | សូម           |
-| sorry      | Som Tos       | សូមទោស        |
-| help       | Chuoy         | ជួយ           |
-| water      | Tuk           | ទឹក           |
-| eat        | Si Bai        | ស៊ីបាយ        |
-| name       | Chhmous       | ឈ្មោះ         |
+|       |      |       |
+|   |          |          |
+|         |     |     |
+|          |             |             |
+|      |           |            |
+|       |         |         |
+|        |          |            |
+|       |            |            |
+|         |          |         |
+|        |        |          |
 
 ## 11. Limitations & Future Work
 
