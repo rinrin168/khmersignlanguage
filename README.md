@@ -1,4 +1,4 @@
-# 🤟 Khmer Sign Language Word Recognition System
+# Khmer Sign Language Word Recognition System
 
 **Author:** _[Your Name Here]_
 **Course:** Deep Learning — Final Project
