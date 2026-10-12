@@ -28,7 +28,7 @@ COLORS = {"lstm": "#E69F00", "gru": "#0072B2", "transformer": "#009E73"}
 INK, MUTED, ACCENT = "#222222", "#6B7280", "#D1495B"
 
 plt.rcParams.update({
-    "font.size": 14, "axes.spines.top": False, "axes.spines.right": False,
+    "svg.fonttype": "path", "font.size": 14, "axes.spines.top": False, "axes.spines.right": False,
     "axes.titlesize": 16, "axes.titleweight": "bold", "text.color": INK,
     "axes.labelcolor": INK, "xtick.color": INK, "ytick.color": INK,
 })
@@ -47,6 +47,11 @@ def save(fig, fname):
     os.makedirs(OUT_DIR, exist_ok=True)
     path = os.path.join(OUT_DIR, fname)
     fig.savefig(path, dpi=200, bbox_inches="tight", facecolor="white")
+    canva = os.path.join("slides", "art", "canva", "charts")
+    os.makedirs(canva, exist_ok=True)
+    stem = os.path.splitext(fname)[0]
+    fig.savefig(os.path.join(canva, stem + ".png"), dpi=300, bbox_inches="tight", transparent=True)
+    fig.savefig(os.path.join(canva, stem + ".svg"), bbox_inches="tight", transparent=True)
     plt.close(fig)
     print("saved", path)
 
@@ -190,8 +195,6 @@ def fig_curves():
     handles = [Line2D([0], [0], color="#374151", lw=2, label="train (dark grey)"),
                Line2D([0], [0], color="#9AA5B1", lw=2.6, label="validation (model colour)")]
     names = [h.get_label() for h in handles]
-    fig.suptitle("Training vs validation curves (same data split, same optimizer, seed 42)",
-                 fontsize=17, fontweight="bold", y=1.0)
     fig.tight_layout()
     fig.legend(handles, names, loc="upper center", ncol=2, frameon=False,
                bbox_to_anchor=(0.5, 0.0))
@@ -228,6 +231,35 @@ def fig_results():
     b.set_title("Model size and training cost (Tesla T4)")
     fig.tight_layout()
     save(fig, "fig_results.png")
+
+
+def wilson(k, n, z=1.96):
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    return c - h, c + h
+
+
+def fig_accuracy_bars():
+    tags = list(APPROACHES)
+    if os.path.exists(os.path.join(RESULTS_DIR, "lstm_tuned", "metrics.json")):
+        tags.append("lstm_tuned")
+    names = {**NAMES, "lstm_tuned": "LSTM (tuned)"}
+    colors = {**COLORS, "lstm_tuned": "#F2C14E"}
+    n = len(np.load(os.path.join(DATA_DIR, "y_test.npy")))
+    acc = np.array([load(t, "metrics.json")["test_accuracy"] for t in tags])
+    ci = np.array([wilson(round(a * n), n) for a in acc])
+    err = np.vstack([acc - ci[:, 0], ci[:, 1] - acc])
+    fig, ax = plt.subplots(figsize=(6.2, 4.4))
+    ax.bar(range(len(tags)), acc, color=[colors[t] for t in tags], width=0.62,
+           yerr=err, capsize=6, error_kw={"lw": 1.8, "color": INK})
+    for i, a in enumerate(acc):
+        ax.text(i, 0.04, f"{a*100:.0f}%", ha="center", color="white", fontweight="bold", fontsize=17)
+    ax.set_xticks(range(len(tags))); ax.set_xticklabels([names[t] for t in tags], fontsize=13)
+    ax.set_ylim(0, 1.08); ax.set_yticks([]); ax.spines["left"].set_visible(False)
+    ax.set_title("Test accuracy (50 clips, 95% interval)", fontsize=14)
+    save(fig, "fig_accuracy_bars.png")
 
 
 # ---------------------------------------------------------------- tuning
@@ -329,6 +361,7 @@ def main():
     fig_architectures()
     fig_curves()
     fig_results()
+    fig_accuracy_bars()
     fig_tuning()
     fig_lstm_errors()
     fig_diagnostics()

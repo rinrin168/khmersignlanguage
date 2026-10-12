@@ -1,5 +1,7 @@
 # Slide content — copy and paste
 
+> The finished, shorter deck is `khmer_sign_language_presentation.pptx` (12 slides + 2 backups, import it into Canva). This file is the longer reference text behind it: use it for speaker notes and Q&A, and for anything you want to add back.
+
 How to read this file
 - **ON SLIDE** = text to paste onto the slide (short on purpose).
 - **VISUAL** = the picture to insert. All pictures are in `slides/figures/` and were generated from your real results. Re-make them any time with `venv\Scripts\python.exe src\make_slide_figures.py`.
@@ -28,6 +30,14 @@ Colours used in the figures: GRU blue, Transformer green, LSTM orange. Use the s
 | 14 | Conclusion & Future Work | Conclusion and future work | 0:35 |
 | 15 | — | Thank you / questions | 0:05 |
 
+Look and feel (so the deck looks designed, not default)
+- 16:9, white background for content slides; dark navy for the first and last slides (the two hero pictures).
+- Colours: navy `#0B1F3A`, cyan `#3DD5F3` (accents on dark), text `#1F2937`, muted `#6B7280`, GRU `#0072B2`, Transformer `#009E73`, LSTM `#E69F00`.
+- Font: one family only (Calibri or Segoe UI). Titles 34–40 pt bold, body 20–24 pt, never more than 6 lines. One picture per slide, large.
+- Every picture in `slides/art/` has a transparent background, so it sits on a white or coloured slide without a box.
+- **For Canva:** upload from `slides/art/canva/`. Each picture there is a transparent PNG (300 dpi) and a vector SVG (Canva lets you recolour SVGs). The charts are in `slides/art/canva/charts/`. `title_signer`, `thankyou_hand` and `frame_ticks` use white/light lines, so place them on a dark background (use `slides/art/background_dark.png` or Canva's navy `#0B1F3A`). All the other pictures use dark lines for light slides.
+- Pictures in `slides/art/` are drawings (schematics), not real recordings, and say so where it matters. Real screenshots (your MediaPipe window, the live demo) are worth adding if you take them.
+
 Backup slides A1–A5 are at the end. The example deck also had a table-of-contents slide; it is left out here to save time. Add it back (about 10 seconds) if you want to match it.
 
 ---
@@ -46,7 +56,7 @@ School: Kirirom Institute of Technology
 Date: [presentation date]
 Code and data: github.com/rinrin168/khmersignlanguage
 ```
-**VISUAL** (optional): a screenshot of the MediaPipe skeleton on you while signing.
+**VISUAL**: `slides/art/title_hero.png` as the full-slide background (Insert → Picture, then Send to Back). Put the title text on the left half in white; the picture is deliberately empty there. Optional: add a real screenshot of the MediaPipe skeleton on you.
 **GET**: run `venv\Scripts\python.exe src\mediapipe_test.py`, hold a sign, press Windows+Shift+S to capture the window, then press Q to close. It shows your face, so it is your choice whether to use it.
 **SAY**: Name, one sentence: "I built a system that recognises 11 Khmer sign words and compared three neural networks on it."
 
@@ -66,7 +76,7 @@ Problem: recognising Khmer sign language words
 • Question: which sequence model recognises the signs best —
   LSTM, GRU or Transformer?
 ```
-**VISUAL**: none needed.
+**VISUAL**: `slides/art/problem_illustration.png` (person signs → webcam + MediaPipe → word on screen). Place it under the bullets or on the right half.
 **SAY**: Explain input and output precisely. Say the three models are the comparison; the rest of the talk answers the question on the last bullet.
 
 ---
@@ -83,7 +93,7 @@ From webcam to word
 • Only the sequence model is trained — from scratch, in PyTorch
 • All three models get the same input and the same split
 ```
-**VISUAL**: `slides/figures/fig_pipeline.png`
+**VISUAL**: `slides/figures/fig_pipeline.png`. Optional, if there is room: `slides/art/frames_strip.png` underneath to show what a 90-frame clip is (a schematic, not a real sign).
 **SAY**: MediaPipe is not one of my compared approaches. It is a cited, fixed preprocessing step shared by all three. Everything that differs is the sequence model.
 
 ---
@@ -102,7 +112,7 @@ Dataset: self-collected
 • Signs: how are you, again, correct, incorrect, don't understand,
   understand, deaf person, hearing person, delicious, sorry, thank you
 ```
-**VISUAL**: `slides/figures/fig_dataset_split.png`
+**VISUAL**: `slides/art/sign_cards.png` (the 11 signs, colour-coded one-handed vs two-handed, with the 330-clip total). The bullet list can shrink to 3–4 lines next to it.
 **SAY**: Self-collected, so I describe it honestly: one person, which is a limitation I come back to. Balanced: 30 clips per sign.
 **GET** (so you can answer questions about the data):
 - Recording conditions: how many sittings, lighting, background, which laptop camera. You know these; write one line, e.g. "[1 sitting, evening, room light, laptop webcam]".
@@ -125,8 +135,8 @@ Split and preprocessing
   no extra normalisation
 • A hand that is not detected is stored as zeros
 ```
-**VISUAL**: `slides/figures/fig_hand_detection.png` (title it "Data quality: how often a hand was found").
-**SAY**: The test set is never used for any decision. The chart shows missing-hand frames: sorry and thank you are the weakest (79% and 69% of frames).
+**VISUAL**: `slides/figures/fig_dataset_split.png` (clips per sign in train / validation / test).
+**SAY**: The test set is never used for any decision. A hand the camera misses is stored as zeros; backup slide A4 shows which signs lose hands most (sorry and thank you: 79% and 69% of frames).
 
 ---
 
@@ -319,7 +329,9 @@ Code, data and results: github.com/rinrin168/khmersignlanguage
 ```
 Thank you
 Questions?
+github.com/rinrin168/khmersignlanguage
 ```
+**VISUAL**: `slides/art/thankyou_hero.png` as the full-slide background, white text on the left half (same look as slide 1).
 
 ---
 
@@ -353,7 +365,7 @@ Loss: nn.CrossEntropyLoss on raw scores (logits)
 ```
 
 ## A4 — Data quality
-**VISUAL**: `slides/figures/fig_hand_detection.png` if you did not use it on slide 5.
+**VISUAL**: `slides/figures/fig_hand_detection.png`; also available here: `slides/art/pose_hands_diagram.png` (what the 258 numbers per frame are) and `slides/art/hand_landmarks_light.png` (the 21 points of one hand).
 **ON SLIDE**: "Body pose found in 100% of frames. One-handed signs: deaf person, delicious, don't understand, how are you, incorrect, understand. Camera is mirrored, so the 'left hand' channel is your physical right hand."
 
 ## A5 — AI assistance disclosure

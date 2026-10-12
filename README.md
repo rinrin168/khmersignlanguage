@@ -115,6 +115,8 @@ KhmerSignLanguage/
 │   ├── compare.py            ← Stage 6: Aggregate all approaches into one table + figures
 │   ├── diagnostics.py        ← Sanity checks: frame-shuffle test, no-order baselines, confidence intervals
 │   ├── make_slide_figures.py ← Builds the presentation figures in slides/figures/ from saved results
+│   ├── make_slide_art.py     ← Draws the non-data slide visuals (slides/art/, Canva-ready PNG + SVG)
+│   ├── make_deck.py          ← Builds slides/khmer_sign_language_presentation.pptx from results/ (needs python-pptx)
 │   └── predict.py            ← Stage 7: Real-time prediction (webcam)
 ├── app/
 │   └── app.py                ← Stage 8: Streamlit web interface
