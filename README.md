@@ -64,10 +64,24 @@ A learning-rate × weight-decay grid search (3 learning rates × 2 weight-decay 
 ## 6. Error Analysis
 
 - **GRU: 0/50 test errors.** No misclassifications to analyze.
-- **Transformer: 1/50 test errors.** The one mistake was `understand` predicted as `dont_understand` (confidence 0.95) — these two signs are semantically and likely visually related (negation of a similar hand shape), making them the hardest pair to tell apart.
-- **LSTM: 31/50 test errors (62%).** Examining [`results/lstm/errors.csv`](results/lstm/errors.csv) shows the failure mode clearly: the model collapsed to predicting `understand` for most inputs regardless of the true sign, almost always at confidence ≈0.18 (close to 1/11 ≈ 0.09, i.e. barely more than a random guess). A handful of other signs (`correct`, `hearing_person`, `again`) got confused with each other at slightly higher confidence (~0.35–0.43), but the dominant pattern is the model defaulting to one class rather than discriminating between signs at all.
-  - **Likely cause:** the stacked LSTM (64→128→64 units, no gradient clipping) struggles to learn stable gradients across 90 time steps with this little data (230 training clips over 11 classes ≈ 21 per class). GRU's simpler gating and the Transformer's direct attention over all 90 frames (no step-by-step recurrence) both avoid this long-sequence optimization difficulty, which is consistent with it being a known weakness of vanilla LSTMs relative to GRU/Transformer on longer sequences.
-  - This is corroborated by the tuning search (Section 5): lowering the learning rate substantially recovers performance (38% → 70% val accuracy), meaning the architecture isn't entirely unable to learn the task — it is more sensitive to the learning rate than GRU or Transformer are.
+- **Transformer: 1/50 test errors.** The one mistake was `understand` predicted as `dont_understand` (confidence 0.95). Plausibly a visually similar pair, but the data does not show why; confirm by watching the two clips before claiming a cause.
+- **LSTM: 31/50 test errors (62%).** See [`results/lstm/errors.csv`](results/lstm/errors.csv). 24 of the 31 wrong answers were `understand`, each given at confidence ≈0.18 (chance is 1/11 ≈ 0.09, so the model was close to guessing). All 24 came from the five other one-handed signs (`deaf_person`, `delicious`, `dont_understand`, `how_are_you`, `incorrect`). The other 7 errors were `correct`, `again` and `hearing_person` confused with each other. `sorry`, `thank_you` and `understand` were all recognised (recall 100%). So the LSTM picked up a coarse cue (which hands are present) but not the finer differences within each group.
+  - **Diagnosis: underfitting.** Its training accuracy ended at only ≈40%, so it failed to fit the training data (it did not memorise it). A no-order baseline reaches 100% on the same data (Section 6.1), so the task is not hard: the LSTM's optimisation failed under these settings.
+  - **Possible contributing factor (not proven):** the learning rate. In the tuning search (Section 5), lowering it from 1e-3 to 1e-4 raised the LSTM's validation accuracy from 48% to 70%. Other candidates (default weight initialisation, 90 recurrent steps with only 230 training clips) were not tested.
+
+### 6.1 Sanity checks (`src/diagnostics.py` → `results/diagnostics.json`)
+
+| Check (test set, 50 clips) | GRU | Transformer | LSTM |
+|---|---|---|---|
+| Test accuracy | 100% | 98% | 38% |
+| 95% confidence interval | 93–100% | 90–100% | 26–52% |
+| Frames randomly shuffled (mean of 20) | 94% | 93% | 35% |
+| Time order reversed | 94% | 88% | 28% |
+
+Non-deep baselines on the same split (not counted as approaches): logistic regression on only the two "hand detected" fractions: **50%**; logistic regression on the per-clip **average** of all 258 values (no time order at all): **100%**.
+
+- Shuffling the frames costs GRU and Transformer only 5–6 points, and a model with no notion of order scores 100%. On this dataset the signs are mostly separable by hand shape and position, so these results do **not** show that the models learned movement over time.
+- With 50 test clips one error is 2 points, and the GRU and Transformer intervals overlap almost completely, so "GRU beats Transformer" is not statistically established. GRU/Transformer beating LSTM is (their intervals do not overlap).
 
 ## 7. Project Structure
 
@@ -99,6 +113,8 @@ KhmerSignLanguage/
 │   ├── evaluate.py           ← Stage 5: Evaluate one approach on the test set
 │   ├── hyperparam_search.py  ← Learning-rate / weight-decay search for the best approach
 │   ├── compare.py            ← Stage 6: Aggregate all approaches into one table + figures
+│   ├── diagnostics.py        ← Sanity checks: frame-shuffle test, no-order baselines, confidence intervals
+│   ├── make_slide_figures.py ← Builds the presentation figures in slides/figures/ from saved results
 │   └── predict.py            ← Stage 7: Real-time prediction (webcam)
 ├── app/
 │   └── app.py                ← Stage 8: Streamlit web interface
@@ -155,7 +171,9 @@ _TODO: fill in the Khmer phonetic and script columns — ask your lecturer or a 
 - **Single signer, single session.** All 330 clips (every train/val/test example) come from one person recording in one room in one sitting. The 100% GRU / 98% Transformer test accuracy almost certainly overstates how well the model would generalize to a different signer, different lighting, or a different camera — the test clips are very similar in style to the training clips. This has not been validated with a second signer.
 - **Small dataset.** 30 clips per class (≈21 after the train split) is enough to show a clear comparison between architectures, but is small by deep-learning standards; results from such a small test set (50 clips total) can shift noticeably with new data.
 - **No data augmentation.** Only the raw landmark sequences were used; augmenting (time-warping, mirroring, small coordinate jitter) was not attempted and could improve robustness.
-- **LSTM underperformance is learning-rate sensitive**, not necessarily a hard architectural ceiling — Section 5's tuning search closed much of the gap (38% → 70% val accuracy) with a lower learning rate, suggesting a more thorough search or longer training might close it further.
+- **The dataset is easy.** A logistic regression on clip averages scores 100% and shuffling frames barely hurts GRU/Transformer (Section 6.1), so the comparison cannot show whether the models use temporal information. Signs that differ only in movement, or more than one signer, would be a harder and more informative test.
+- **No landmark normalisation.** Coordinates are raw MediaPipe positions in the frame (not relative to the shoulders or scaled by body size), and a missing hand is stored as zeros. The model can therefore pick up signer position and detection dropouts as shortcuts.
+- **LSTM was not retrained with its tuned settings.** The reported LSTM row uses the default learning rate. Section 5's search raised its validation accuracy from 48% to 70% at a lower learning rate; its test score at those settings was not measured.
 - **Hand-only fallback.** Several signs were performed one-handed, and MediaPipe occasionally failed to detect a hand in a frame (saved as zeros) — most visibly for `sorry` (79% hand-detection rate) and `thank_you` (69%), the two weakest-detected signs in the raw data, though this did not noticeably hurt their final test accuracy here.
 
 **Future work:**

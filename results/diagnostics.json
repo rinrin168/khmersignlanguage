@@ -1,0 +1,56 @@
+{
+  "n_test": 50,
+  "models": {
+    "lstm": {
+      "test_accuracy": 0.38,
+      "test_accuracy_ci95": [
+        0.2586259584257722,
+        0.5184980497760643
+      ],
+      "shuffled_frames_mean": 0.34700000000000003,
+      "shuffled_frames_min": 0.32,
+      "shuffled_frames_max": 0.38,
+      "reversed_time": 0.28
+    },
+    "gru": {
+      "test_accuracy": 1.0,
+      "test_accuracy_ci95": [
+        0.9286499658256813,
+        1.0
+      ],
+      "shuffled_frames_mean": 0.9390000000000001,
+      "shuffled_frames_min": 0.92,
+      "shuffled_frames_max": 0.98,
+      "reversed_time": 0.94
+    },
+    "transformer": {
+      "test_accuracy": 0.98,
+      "test_accuracy_ci95": [
+        0.8950431352816304,
+        0.9964608319110235
+      ],
+      "shuffled_frames_mean": 0.929,
+      "shuffled_frames_min": 0.86,
+      "shuffled_frames_max": 0.98,
+      "reversed_time": 0.88
+    }
+  },
+  "baselines": {
+    "logreg_hand_presence_only": 0.5,
+    "logreg_clip_mean_no_order": 1.0
+  },
+  "lstm_error_structure": {
+    "one_handed_signs": [
+      "deaf_person",
+      "delicious",
+      "dont_understand",
+      "how_are_you",
+      "incorrect",
+      "understand"
+    ],
+    "predicted_understand_total": 24,
+    "predicted_understand_from_one_handed": 24,
+    "mean_confidence_of_errors": 0.22781869336482016,
+    "chance_confidence": 0.09090909090909091
+  }
+}
