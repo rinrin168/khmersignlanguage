@@ -71,6 +71,7 @@ DATA_DIR = "data"
 RESULTS_DIR = "results"
 HOLISTIC_PATH = os.path.join(MODELS_DIR, "holistic_landmarker.task")
 APPROACHES = ["lstm", "gru", "transformer"]
+MIN_HAND_SHARE = 0.5   # share of the last 90 frames that must show a hand before predicting
 
 
 @st.cache_resource
@@ -135,6 +136,7 @@ with tab1:
             )
             cap = cv2.VideoCapture(0)
             sequence = collections.deque(maxlen=SEQUENCE_LENGTH)
+            hand_seen = collections.deque(maxlen=SEQUENCE_LENGTH)
             current_word = "Waiting..."
             current_conf = 0.0
 
@@ -152,8 +154,12 @@ with tab1:
 
                     landmarks = extract_landmarks(results)
                     sequence.append(landmarks)
+                    hand_seen.append(bool(results.left_hand_landmarks or results.right_hand_landmarks))
 
-                    if len(sequence) == SEQUENCE_LENGTH:
+                    # No "no sign" class exists, so only predict when hands were visible in most frames
+                    if len(sequence) == SEQUENCE_LENGTH and np.mean(hand_seen) < MIN_HAND_SHARE:
+                        current_word, current_conf = "Waiting...", 0.0
+                    elif len(sequence) == SEQUENCE_LENGTH:
                         X = torch.tensor(np.array(sequence), dtype=torch.float32).unsqueeze(0).to(device)
                         with torch.no_grad():
                             probs = torch.softmax(model(X), dim=1)[0].cpu().numpy()

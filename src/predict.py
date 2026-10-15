@@ -29,6 +29,9 @@ MODELS_DIR = "models"
 DATA_DIR = "data"
 HOLISTIC_PATH = os.path.join(MODELS_DIR, "holistic_landmarker.task")
 CONFIDENCE_THRESH = 0.70
+# The model has no "no sign" class, so it always picks one of the words.
+# Only predict when a hand was visible in at least this share of the last 90 frames.
+MIN_HAND_SHARE = 0.5
 
 
 def parse_args():
@@ -64,6 +67,7 @@ def main():
         return
 
     sequence = collections.deque(maxlen=SEQUENCE_LENGTH)
+    hand_seen = collections.deque(maxlen=SEQUENCE_LENGTH)
     current_word = "Waiting..."
     current_conf = 0.0
 
@@ -85,8 +89,11 @@ def main():
 
             landmarks = extract_landmarks(results)
             sequence.append(landmarks)
+            hand_seen.append(bool(results.left_hand_landmarks or results.right_hand_landmarks))
 
-            if len(sequence) == SEQUENCE_LENGTH:
+            if len(sequence) == SEQUENCE_LENGTH and np.mean(hand_seen) < MIN_HAND_SHARE:
+                current_word, current_conf = "Waiting...", 0.0
+            elif len(sequence) == SEQUENCE_LENGTH:
                 X = torch.tensor(np.array(sequence), dtype=torch.float32).unsqueeze(0).to(device)
                 with torch.no_grad():
                     probs = torch.softmax(net(X), dim=1)[0].cpu().numpy()
