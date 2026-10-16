@@ -40,3 +40,7 @@ models/*.keras
 # OS
 .DS_Store
 Thumbs.db
+
+# Local-only folders (Linux venv from WSL, extra Colab download copy)
+venv_linux/
+results_colab_*/

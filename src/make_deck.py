@@ -292,15 +292,17 @@ notes(s, "Ten topics, about one minute each or less. You can delete this slide i
 # 3 — Problem and approach
 s = new_slide("Problem and Approach", "From a webcam clip to one of 11 Khmer sign words")
 picture(s, os.path.join(CANVA, "problem_illustration.png"), 0.76, 2.55, 6.4, 3.9, align="left")
-heading(s, 7.7, 2.45, 5.0, "What the system does")
-text(s, 7.7, 3.0, 5.0, 1.8, [
-    "Reads a short webcam clip of a Khmer sign",
-    "Input: 90 frames × 258 landmark values (about 3 s)",
-    "Output: one of 11 words",
-], size=16, bullets=True, after=10)
-heading(s, 7.7, 4.95, 5.0, "The question")
-text(s, 7.7, 5.5, 5.0, 1.3, ["Which model reads the signs best: LSTM, GRU or Transformer?"],
-     size=16, bullets=True, after=10)
+heading(s, 7.7, 2.35, 5.0, "What the system does")
+text(s, 7.7, 2.85, 5.0, 1.5, [
+    "Input: a webcam clip, 90 frames × 258 landmark values (about 3 s)",
+    "Output: one of 11 words (multi-class sequence classification)",
+], size=15, bullets=True, after=6)
+heading(s, 7.7, 4.15, 5.0, "Why it matters")
+text(s, 7.7, 4.65, 5.0, 0.9, ["Khmer Sign Language has very little data or software; "
+                              "a webcam-only recogniser is a first step"], size=15, bullets=True, after=6)
+heading(s, 7.7, 5.55, 5.0, "The question")
+text(s, 7.7, 6.05, 5.0, 0.8, ["Which model reads the signs best: LSTM, GRU or Transformer?"],
+     size=15, bullets=True, after=6)
 notes(s, "Explain input and output precisely. MediaPipe turns each frame into 258 numbers; it is a fixed, "
          "pretrained step shared by all three models. Only the sequence model is trained, from scratch, in PyTorch.")
 
@@ -312,10 +314,11 @@ callout(s, 10.6, 2.35, f"{split['n_train']} / {split['n_val']} / {split['n_test'
 picture(s, os.path.join(CANVA, "sign_cards_clean.png"), 0.76, 3.55, 6.5, 3.3, align="left")
 heading(s, 7.9, 3.65, 4.8, "Notes")
 text(s, 7.9, 4.2, 4.8, 2.6, [
-    "One signer, one webcam",
-    "Fixed, stratified split (seed 42)",
+    "One signer, one webcam; balanced classes",
+    "Fixed, stratified split (seed 42), same for every model",
+    "Preprocessing: MediaPipe landmarks only; no augmentation",
     "A hand the camera misses is stored as zeros",
-], size=16, bullets=True, after=10)
+], size=15, bullets=True, after=8)
 notes(s, "Self-collected, so I describe it honestly: one person. Balanced, 30 clips per sign. "
          "Teal cards are one-handed signs, purple are two-handed. The test set is never used for any decision. "
          "[Add one line on recording conditions: sittings, lighting, camera.]")
@@ -323,12 +326,14 @@ notes(s, "Self-collected, so I describe it honestly: one person. Balanced, 30 cl
 # 5 — Architectures
 s = new_slide("Model Architectures", "Three networks compared on the same task")
 picture(s, os.path.join(CHARTS, "fig_architectures.png"), 0.6, 2.2, 8.2, 4.7, align="left")
-y = 2.45
+y = 2.3
 for key, desc in [("lstm", "Gated memory"), ("gru", "Simpler gates"), ("transformer", "Self-attention, no recurrence")]:
     text(s, 9.3, y, 3.5, 0.4, [NAME[key]], size=19, bold=True, color=MODEL_COLOR[key], after=0)
     text(s, 9.3, y + 0.45, 3.5, 0.4, [desc], size=15, color=GRAY, after=0)
-    y += 1.1
-text(s, 9.3, y + 0.1, 3.5, 0.5, ["All trained from scratch"], size=16, bold=True, color=BLACK, after=0)
+    y += 0.95
+text(s, 9.3, y + 0.1, 3.5, 0.4, ["Why these three"], size=16, bold=True, color=BLACK, after=0)
+text(s, 9.3, y + 0.5, 3.5, 0.9, ["Sequence models from Sessions 07–08, all trained from scratch; "
+                                 "only the architecture changes"], size=14, color=GRAY, after=0)
 notes(s, "LSTM and GRU read the clip frame by frame and keep a memory. The Transformer lets every frame look at "
          "every other frame. GRU has about three quarters of the LSTM's parameters: 3 weight blocks instead of 4.")
 
@@ -350,16 +355,13 @@ notes(s, "One sentence per block. The best epoch, chosen by validation accuracy,
 # 7 — Results
 s = new_slide("Results", "Same 50 test clips for every model")
 order = sorted(rows_models, key=lambda m: -acc[m])
-n = len(order)
-for i, m in enumerate(order):
-    callout(s, 0.76 + (i + 0.5) * (11.94 / n), 2.3, pct(acc[m]), f"{NAME[m]} test accuracy", w=11.94 / n - 0.2)
 trows = [["Approach", "Accuracy", "Macro F1", "Parameters", "Time"]]
 for m in order:
     trows.append([NAME[m], pct(acc[m]), f"{met[m]['f1_macro']:.2f}", f"{meta[m]['trainable_params']:,}",
                   f"{meta[m]['training_time_seconds']:.1f} s"])
-table(s, 0.9, 3.65, [2.2, 1.4, 1.3, 1.7, 1.1], trows, font=15, highlight=1)
-heading(s, 9.1, 3.65, 3.6, "Reading the table")
-text(s, 9.1, 4.15, 3.6, 2.7, [
+table(s, 0.9, 2.45, [2.2, 1.4, 1.3, 1.7, 1.1], trows, font=15, highlight=1)
+picture(s, os.path.join(CHARTS, "fig_accuracy_bars.png"), 8.9, 2.3, 3.9, 4.5)
+text(s, 0.9, 2.45 + 0.5 * len(trows) + 0.35, 7.6, 2.0, [
     "Errors out of 50: " + ", ".join(f"{NAME[m]} {n_err[m]}" for m in order),
     f"95% intervals: GRU {pct(ci['gru'][0])}–{pct(ci['gru'][1])}, Transformer "
     f"{pct(ci['transformer'][0])}–{pct(ci['transformer'][1])}. Not separable with 50 clips",

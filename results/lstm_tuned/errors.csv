@@ -1,0 +1,16 @@
+test_index,true_label,predicted_label,predicted_confidence
+6,how_are_you,incorrect,0.4025079309940338
+10,how_are_you,incorrect,0.4024699628353119
+11,delicious,deaf_person,0.3473914861679077
+15,how_are_you,incorrect,0.4025113880634308
+16,understand,dont_understand,0.39053598046302795
+26,correct,again,0.36691200733184814
+31,understand,dont_understand,0.39030298590660095
+32,delicious,deaf_person,0.3465711176395416
+36,delicious,deaf_person,0.3470374047756195
+38,how_are_you,incorrect,0.4025002419948578
+39,understand,dont_understand,0.39012980461120605
+42,how_are_you,incorrect,0.4024621248245239
+43,delicious,deaf_person,0.3468486964702606
+44,understand,dont_understand,0.3908608853816986
+48,delicious,deaf_person,0.34717151522636414
